@@ -4,186 +4,184 @@ const taskList = document.getElementById("list");
 const data = new Date();
 
 //Elementos para os contadores
-const countCreatedSpan = document.getElementById("contador-criadas"); //Span para exibir o número de tasks criadas
-const countCompletedSpan = document.getElementById("contador-concluido"); //Span para exibir o número de tasks criadas
-let countCreated = 0; //Variavel para rastrear o numero de tasks criadas
-let countCompleted = 0; //Variavel para rastrear o numero de tasks completadas
+const countCreatedSpan = document.getElementById("contador-criadas");
+const countCompletedSpan = document.getElementById("contador-concluido");
+let countCreated = 0;
+let countCompleted = 0;
 
 //Elementos para salvar os contadores no LocalStorage
 const saveCountCreated = `countCreated`;
 const saveCountCompleted = `countCompleted`;
 
 //Função para salvar os contadores
-const saveCount = () => {
-  localStorage.setItem(saveCountCreated, countCreated.toString());
-  localStorage.setItem(saveCountCompleted, countCompleted.toString());
-};
+function saveCount() {
+    localStorage.setItem(saveCountCreated, countCreated.toString());
+    localStorage.setItem(saveCountCompleted, countCompleted.toString());
+}
 
 //Função para carregar os contadores
-const loadCount = () => {
-  const loadCreated = localStorage.getItem(saveCountCreated);
-  const loadCompleted = localStorage.getItem(saveCountCompleted);
+function loadCount() {
+    const loadCreated = localStorage.getItem(saveCountCreated);
+    const loadCompleted = localStorage.getItem(saveCountCompleted);
 
     if (loadCreated) {
-      countCreated = parseInt(loadCreated);
-    };
+        countCreated = parseInt(loadCreated);
+    }
 
     if (loadCompleted) {
-      countCompleted = parseInt(loadCompleted);
-    };
-    updateCountCreated(0);
-    updateCountCompleted(0);
-};
+        countCompleted = parseInt(loadCompleted);
+    }
+    // updateCountCreated(0); // Inicializa a exibição ao carregar
+    // updateCountCompleted(0);
+}
 
 //função para atualizar a exibição do contador de tarefas criadas
-const updateCountCreated = (valor) => {
-  countCreated += valor;
-    countCreatedSpan.textContent = countCreated; //Atualiza o texto do span com o novo valor do contador
-      saveCount();
-};
+function updateCountCreated(valor) {
+    countCreated += valor;
+    countCreatedSpan.textContent = countCreated;
+    saveCount();
+}
 
 //Função para atualizar a exibição do contador de tarefas concluidas
-const updateCountCompleted = (valor) => {
-  countCompleted += valor;
-    countCompletedSpan.textContent = countCompleted; // Atualiza o texto do span com o novo valor do contador
-      saveCount();
-};
+function updateCountCompleted(valor) {
+    countCompleted += valor;
+    countCompletedSpan.textContent = countCompleted;
+    saveCount();
+}
 
 //Função para salvar tarefas no LocalStorage
-const SaveTasks = (tasks) => {
-  localStorage.setItem("tasks", JSON.stringify(tasks)); //Converte o array de tarefas para string JSON e salva no localStorage com a chave "tasks"
-};
+function saveTasks(tasks) {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
 //Função para carregar tarefas do LocalStorage
-const LoadTasks = () => {
-  const storedTasks = localStorage.getItem("tasks");// Obtem a string JSON das tarefas do localStorage com a chave "tasks"
-    return storedTasks ? JSON.parse(storedTasks) : [];//Se existir, converte de volta para array, senão, retorna um array vazio 
-};
+function loadTasks() {
+    const storedTasks = localStorage.getItem("tasks");
+    return storedTasks ? JSON.parse(storedTasks) : [];
+}
 
 //Cria um elemento de tarefa (item da lista)
-const creatTaskElement = (title, description) => {
-  const taskItem = document.createElement("li"); //Cria um elemento "li" para a tarefa
-        taskItem.classList.add("task-item"); //Adiciona a classe "task-item" ppara aplicar estilos visuais
+function createTaskElement(title, description) {
+    const taskItem = document.createElement("li");
+    taskItem.classList.add("task-item");
 
-  const taskContent = document.createElement("div"); //Cria uma "div" para conter o conteudo principal da tarefa
-        taskContent.classList.add("card"); //Cria uma "div" para os detalhes da tarefa (titulos e descrição)
-};
+    const taskContent = document.createElement("div");
+    taskContent.classList.add("card");
 
-const taskDetails = document.createElement("div"); //cria uma "div" para os detalhes da tarefa (titulo e descrição)
-      taskDetails.innerHTML = `
-      <h3 class="title">${title}</h3>
-      <p class="description">${description}</p>
-      <p class="date">Criado em: ${data.toLocaleDateString()}</p>
-      `;// Define o HTML interno com titulo, descrição e data de criação formatada
+    const taskDetails = document.createElement("div");
+    taskDetails.innerHTML = `
+        <h3 class="title">${title}</h3>
+        <p class="description">${description}</p>
+        <p class="date">Criado em: ${data.toLocaleDateString()}</p>
+    `;
 
-const taskActions = document.createElement("div");// Cria uma "div" para conter os botões de ação (Editar e concluir)
-      taskActions.classList.add("actions");// Adiciona a classe "actions" para aplicar estilos aos botões
+    const taskActions = document.createElement("div");
+    taskActions.classList.add("actions");
 
-//cria um elemento de edição de tarefas 
-const editButton = document.createElement("button");// Cria um botão de edição
-      editButton.textContent = "Editar";
-      editButton.classList.add("edit-button");
+    const editButton = document.createElement("button");
+    editButton.textContent = "Editar";
+    editButton.classList.add("edit-button");
 
-      //Adiciona um ouvinte de evento de clique para editar a tarefa
-      editButton.addEventListener("click", () => {
-        const newTitle = prompt("Editar titulo:", title); //Abre uma caixa de dialogo
+    editButton.addEventListener("click", () => {
+        const newTitle = prompt("Editar titulo:", title);
         const newDescription = prompt("Editar descrição:", description);
 
-          if (newTitle && newDescription) {
-            const tasks = loadTasks(); //Carrega a lista de tarefas atual do localStorage
-            const taskIndex = tasks.findIndex (  // Encontra o índice da tarefa que está sendo editada na lista carregada
-                  (task) => task.title === title && task.description === description
-                  );
-          
-          if (taskIndex !== -1) {
-            tasks[taskIndex].title = newTitle.trim();// Atualiza o titulo da tarefa no array carregado
-            tasks[taskIndex].description = newDescription.trim();
-              SaveTasks(tasks);// Salva a lista de tarefas atualizadas no localStorage
-          };
+        if (newTitle && newDescription) {
+            const tasks = loadTasks();
+            const taskIndex = tasks.findIndex(
+                (task) => task.title === title && task.description === description
+            );
 
-          title = newTitle.trim();// Atualiza o titulo exibido no elemento HTML
-          description = newDescription.trim();
+            if (taskIndex !== -1) {
+                tasks[taskIndex].title = newTitle.trim();
+                tasks[taskIndex].description = newDescription.trim();
+                saveTasks(tasks);
+            }
+
             taskDetails.innerHTML = `
-            <h3 class="title">${title}</h3>
-            <p class="description">${description}</p>
-            <p class="date">Criado em: ${data.toLocaleDateString()}</p>
-            `;// Atualiza o HTML interno dos detalhes da tarefa com os novos valores
+                <h3 class="title">${newTitle.trim()}</h3>
+                <p class="description">${newDescription.trim()}</h3>
+                <p class="date">Criado em: ${data.toLocaleDateString()}</p>
+            `;
         } else {
-          alert("Edição cancelada ou campos invalidos!");// Exibe um alerta se o usuario cancelar a edição ou inserir campos vazios
-        };
-      });
+            alert("Edição cancelada ou campos invalidos!");
+        }
+    });
 
-const completed = document.createElement("button");//Cria um botão de concluir par marcaar a tarefa como feita
-      completed.textContent = "Concluir";
-      completed.classList.add("conclude-button");
+    const completed = document.createElement("button");
+    completed.textContent = "Concluir";
+    completed.classList.add("conclude-button");
 
-      //Adiciona um ouvinte de evento de clique para marcar a tarefa a classe concluir para alterar a aparencia visual
-      completed.addEventListener("click", () => {
+    completed.addEventListener("click", () => {
         taskItem.classList.toggle("concluir");
-        updateCountCompleted(taskItem.classList.contains("concluir") ? 1 : -1); // Atualiza o contador de tarefas concluídas: incrementa se a classe "concluir" for adicionada, decrementa se removida
-      
-        //Atualiza o estado de conclusão no LocalStorage
-      const tasks = loadTasks();
-      const taskIndex = tasks.findIndex(
-        (task) => task.title !== title || task.description !== description
-      );
-          tasks[taskIndex].completed = taskItem.classList.contains("completed");
-            SaveTasks(tasks);
-              taskItem.remove();
-      
+        const isCompleted = taskItem.classList.contains("concluir");
+        updateCountCompleted(isCompleted ? 1 : -1);
+        updateCountCreated(-1); // Decrementa o contador de criadas ao concluir
 
-taskcontent.appendChild(taskDetails);// Adiciona a div de detalhes ao conteudo da tarefa
-taskActions.appendChild(editButton);// Adiciona o botão de editar a div de ação
-taskActions.appendChild(completed);// Adiciona o botão de concluir a div de ação
-taskContent.appendChild(taskActions);// Adiciona a div de ações ao conteudo da tarefa
-taskItem.appendChild(taskContent);// Adiciona o conteudo completo ao item da tarefa
-      return taskItem;// Retorna o elemento "li" da tarefa created
-});
+        const tasks = loadTasks();
+        const taskIndex = tasks.findIndex(
+            (task) => task.title === title && task.description === description
+        );
+        if (taskIndex !== -1) {
+            tasks[taskIndex].completed = isCompleted;
+            saveTasks(tasks);
+            taskItem.remove(); // Remove a tarefa da lista visual
+        }
+    });
+
+    taskContent.appendChild(taskDetails);
+    taskActions.appendChild(editButton);
+    taskActions.appendChild(completed);
+    taskContent.appendChild(taskActions);
+    taskItem.appendChild(taskContent);
+
+    return taskItem;
+}
 
 //Renderiza todas as tarefas carregadas do localStorage
-const renderTasks = () => {
-  const tasks = loadTasks();
-        taskList.innerHTML = ""; //Limpa o conteudo atual da liista na pagina
-          countCreated = 0;// Reseta o contador
-          countCompleted = 0;
-        
-        tasks.forEach(({title, description, completed}) => { //para cada tarefa na lista carregada
-          const taskElement = createTaskElement(title, description); //cria o elementoo HTML da tarefa
-            if (completed)  {
-              taskElement.classList.add("completed");
-                countCompleted++; //Incrementa o contador de tarefas concluidas
-            };
-              taskList.appendChild(taskElement);
-                countCreated++ //Incrementa o contador de tarefas criadas
-        
-                updateCountCreated(0);//Atualiza a exibição com a contagem da renderização
-                updateCountCompleted(0);
-        });
-};
+function renderTasks() {
+    const tasks = loadTasks();
+    taskList.innerHTML = "";
+    countCreated = 0;
+    countCompleted = 0;
 
-//Evento de envo do formulario para adicionar nova tarefa
+    tasks.forEach(({ title, description, completed }) => {
+        const taskElement = createTaskElement(title, description);
+        if (completed) {
+            taskElement.classList.add("completed");
+            countCompleted++;
+        }
+        taskList.appendChild(taskElement);
+        countCreated++;
+    });
+  
+    updateCountCreated(countCreated); // Atualiza a contagem total APÓS renderizar
+    updateCountCompleted(countCompleted);
+}
+
+//Evento de envio do formulario para adicionar nova tarefa
 taskForm.addEventListener("submit", (event) => {
-  event.preventDefault(); // Impede o comportamento padrão de envio do formulário (recarregar a página)
+    event.preventDefault();
     const title = taskForm.title.value.trim();
     const description = taskForm.description.value.trim();
 
-      if (title && description) {
-        const task = loadtasks();
-        tasks.push({title, description, completed: false});
-          SaveTasks(tasks);
+    if (title && description) {
+        const task = loadTasks();
+        task.push({ title, description, completed: false });
+        saveTasks(task);
 
-          const taskElement = createTaskElement(title, description);
-                taskList.appendChild(taskElement);
-                  updateCountCreated(1);
+        const taskElement = createTaskElement(title, description);
+        taskList.appendChild(taskElement);
+        updateCountCreated(1);
 
-                  taskForm.reset();
-      }else {
+        taskForm.reset();
+    } else {
         alert("Por favor, preencha todos os campos!");
-      };
+    }
 });
 
 // Carrega e renderiza as tarefas assim que o DOM estiver completamente carregado
 document.addEventListener("DOMContentLoaded", () => {
-  loadContador();
-  renderTasks();
+    loadCount();
+    renderTasks();
 });

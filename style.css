@@ -24,7 +24,8 @@ form {
     flex-direction: column;
     gap: 4px;
     padding: 60px;
-    border: 1px solid 
+    border: 1px solid #ebe8e8;
+    border-radius: 8px;
 }
 
 button {
