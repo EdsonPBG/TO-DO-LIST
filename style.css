@@ -23,7 +23,7 @@ form {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 60px;
+    padding: 20px;
     border: 1px solid #ebe8e8;
     border-radius: 8px;
 }
@@ -36,6 +36,18 @@ button {
     border-radius: 8px;
     border: 1px solid #ccc;
     align-self: flex-start;
+}
+
+.edit-button {
+    background-color: yellow;
+    color: white;
+    margin-right: 5px;
+}
+
+.conclude-button {
+    background-color: green;
+    color: white;
+
 }
 
 h1,
@@ -52,7 +64,6 @@ h3 {
     background-color: #f9f9f9;
     padding: 12px 20px;
     border-radius: 8px;
-    border: 1px solid #000000;
     .title {
         font-weight: bold;
     }
@@ -61,11 +72,11 @@ h3 {
     }
     .actions {
         display: flex;
-        flex-direction: column;
+        /* flex-direction: column; */
         > * {
             width: 100%;
         }
-        .delete-button {
+        /* .delete-button {
             color: #f9f9f9;
             background-color: #cf5358;
             padding: 12px 20px;
@@ -73,7 +84,7 @@ h3 {
             border-radius: 8px;
             border: 1px solid #ccc;
             align-self: flex-end;
-        }
+        } */
     }
 }
 
@@ -84,6 +95,12 @@ h3 {
     flex-direction: column;
     gap: 12px;
     border: 0px solid #ccc;
+    width: 100%;
+    padding: 1px;
+    margin: 1px 0;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: 1px solid #ebe8e8;
 }
 
  #contadores{
